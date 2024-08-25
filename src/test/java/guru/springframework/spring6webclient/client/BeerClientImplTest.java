@@ -17,6 +17,19 @@ class BeerClientImplTest {
     BeerClient beerClient;
 
     @Test
+    void testBeerJson() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+        beerClient.listBeersJsonNode().subscribe(jsonNode -> {
+            log.info(jsonNode.toPrettyString());
+
+            atomicBoolean.set(true);
+        });
+
+        await().untilTrue(atomicBoolean);
+    }
+
+    @Test
     void testListBeerMap() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
