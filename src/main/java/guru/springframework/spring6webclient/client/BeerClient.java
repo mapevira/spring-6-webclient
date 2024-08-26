@@ -6,6 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.concurrent.Flow;
 
 /**
  * Created by jt, Spring Framework Guru.
@@ -25,4 +26,6 @@ public interface BeerClient {
     Flux<BeerDTO> listBeerDtos();
 
     Mono<BeerDTO> getBeerById(String id);
+
+    Flux<BeerDTO> getBeerByBeerStyle(String beerStyle);
 }
