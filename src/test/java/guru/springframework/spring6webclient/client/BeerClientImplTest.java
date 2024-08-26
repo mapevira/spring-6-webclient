@@ -14,13 +14,28 @@ import static org.awaitility.Awaitility.await;
 class BeerClientImplTest {
 
     @Autowired
-    BeerClient beerClient;
+    BeerClient client;
+
+    @Test
+    void testGetBeerById() {
+
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+        client.listBeerDtos()
+                .flatMap(dto -> client.getBeerById(dto.getId()))
+                .subscribe(byIdDto -> {
+                    log.info(byIdDto.getBeerName());
+                    atomicBoolean.set(true);
+                });
+
+        await().untilTrue(atomicBoolean);
+    }
 
     @Test
     void testBeerDto() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
-        beerClient.listBeerDtos().subscribe(dto -> {
+        client.listBeerDtos().subscribe(dto -> {
             log.info(dto.getBeerName());
 
             atomicBoolean.set(true);
@@ -33,7 +48,7 @@ class BeerClientImplTest {
     void testBeerJson() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
-        beerClient.listBeersJsonNode().subscribe(jsonNode -> {
+        client.listBeersJsonNode().subscribe(jsonNode -> {
             log.info(jsonNode.toPrettyString());
 
             atomicBoolean.set(true);
@@ -46,7 +61,7 @@ class BeerClientImplTest {
     void testListBeerMap() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
-        beerClient.listBeerMap().subscribe(response -> {
+        client.listBeerMap().subscribe(response -> {
             log.info(response.toString());
             atomicBoolean.set(true);
         });
@@ -58,7 +73,7 @@ class BeerClientImplTest {
     void listBeer() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
-        beerClient.listBeer().subscribe(response -> {
+        client.listBeer().subscribe(response -> {
             log.info(response);
             atomicBoolean.set(true);
         });
