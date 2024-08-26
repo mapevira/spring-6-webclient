@@ -2,7 +2,6 @@ package guru.springframework.spring6webclient.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import guru.springframework.spring6webclient.model.BeerDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -24,7 +23,7 @@ public class BeerClientImpl implements BeerClient {
     private final WebClient webClient;
 
     public BeerClientImpl(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8080").build();
+        this.webClient = webClientBuilder.build();
     }
 
     @Override
