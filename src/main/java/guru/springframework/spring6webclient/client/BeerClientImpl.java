@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by jt, Spring Framework Guru.
@@ -71,8 +72,8 @@ public class BeerClientImpl implements BeerClient {
                 .body(Mono.just(beerDTO), BeerDTO.class)
                 .retrieve()
                 .toBodilessEntity()
-                .flatMap(voidResponseEntity -> Mono.just(voidResponseEntity
-                        .getHeaders().get("Location").get(0)))
+                .flatMap(voidResponseEntity -> Mono.just(Objects.requireNonNull(voidResponseEntity
+                        .getHeaders().get("Location")).get(0)))
                 .map(path -> path.split("/")[path.split("/").length - 1])
                 .flatMap(this::getBeerById);
     }
@@ -85,6 +86,25 @@ public class BeerClientImpl implements BeerClient {
                 .retrieve()
                 .toBodilessEntity()
                 .flatMap(voidResponseEntity -> getBeerById(beerDTO.getId()));
+    }
+
+    @Override
+    public Mono<BeerDTO> patchBeer(BeerDTO beerDTO) {
+        return webClient.patch()
+                .uri(uriBuilder -> uriBuilder.path(BEER_PATH_ID).build(beerDTO.getId()))
+                .body(Mono.just(beerDTO), BeerDTO.class)
+                .retrieve()
+                .toBodilessEntity()
+                .flatMap(voidResponseEntity -> getBeerById(beerDTO.getId()));
+    }
+
+    @Override
+    public Mono<Void> deleteBeer(BeerDTO beerDTO) {
+        return webClient.delete()
+                .uri(uriBuilder -> uriBuilder.path(BEER_PATH_ID).build(beerDTO.getId()))
+                .retrieve()
+                .toBodilessEntity()
+                .then();
     }
 
     @Override
